@@ -50,7 +50,7 @@ operations_to_apply = dict(
                     RawInfo = 0,                 # Gets all the specs of your data
                     IdentifySensors = 0,         # Plot all sensors used in the scanner
                     LoadData = 1,                # *** This should always be set to 1 to run anything else below.
-                    PlotRaw = 0,                 # Plot raw data. You can remove first round of bad data here.
+                    PlotRaw = 1,                 # Plot raw data. You can remove first round of bad data here.
                     
                     ## Data Manipulation
                     FreqFilter = 1,              # *** Need to set filter range in Section 2 - FreqFilter
@@ -75,7 +75,7 @@ operations_to_apply = dict(
 
                     ## Epochs
                     PlotERPs = 0,                # Need to identify sensor in Section 2 - ERPSensor for ERP plotting.
-                    PlotEpochs = 1,              # Plots every single epoch for all sensors. Here is where you can manually remove (noisy) epochs by left clicking. 
+                    PlotEpochs = 0,              # Plots every single epoch for all sensors. Here is where you can manually remove (noisy) epochs by left clicking. 
                                                  # Be careful. Once you select epochs to be removed, they will be registered into the drop log once you close the plot. The only way to undo this is to re-run the entire script once more.
                     SaveEpochs = 0,              # Save Epoch file as an output 
                     
@@ -85,7 +85,7 @@ operations_to_apply = dict(
                     PlotProj = 0,
                     PlotTopo = 0,
                     PlotOnSpecificTime = 0,      # Need to specify that time in Section 2 - ERPTime
-                    PlotOnConditionAndSensor = 0,# Need to specify that time in Section 2 - condition & meg
+                    PlotOnConditionAndSensor = 0,# Need to specify that time in Section 2 - condition, meg and Plot min and max range
                     SaveEvoked = 0,              # Save Evoked file as an output
                     ReadEvoked = 1,              # *** Read an Evoked file for contrast comparisons. Need to specify conditions you wish to read at Section 2 - ReadConditions.
                     
@@ -186,6 +186,8 @@ ERPTime = 0.17
 
 condition = 'face'
 meg = 'grad'
+PlotMinCrop = -0.2
+PlotMinCrop = 0.5
 
 ReadConditions = "face/famous/first"
 
@@ -368,7 +370,7 @@ if operations_to_apply['PlotOnSpecificTime']:
     evoked.plot_joint(times=[ERPTime])
     
 if operations_to_apply['PlotOnConditionAndSensor']:
-    epochs[str(condition)].average().pick_types(meg=str(meg)).crop(-0.1, 0.25).plot(spatial_colors=True);    
+    epochs[str(condition)].average().pick_types(meg=str(meg)).crop(PlotMinCrop, PlotMaxCrop).plot(spatial_colors=True);    
     
 if operations_to_apply['SaveEvoked']:
     evoked_fname = raw_fname.replace('_meg.fif', '-ave.fif')
